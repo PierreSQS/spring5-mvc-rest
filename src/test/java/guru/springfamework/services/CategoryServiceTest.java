@@ -6,9 +6,8 @@ import guru.springfamework.domain.Category;
 import guru.springfamework.repositories.CategoryRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class CategoryServiceImplAltTest {
+public class CategoryServiceTest {
 
     @Mock
     private CategoryRepository catRepoMock;
@@ -30,33 +28,38 @@ public class CategoryServiceImplAltTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         categorySrv = new CategoryServiceImpl(catRepoMock, CategoryMapper.INSTANCE);
     }
 
     @Test
     public void getAllCategories() {
         // Given
+        final String mockFreshName = "Fresh";
+        final String mockFruitName = "Fruits";
+
         Category catMock1 = new Category();
         catMock1.setId(1L);
-        catMock1.setName("Fruits");
+        catMock1.setName(mockFruitName);
 
         Category catMock2 = new Category();
         catMock2.setId(2L);
-        catMock2.setName("Fresh");
+        catMock2.setName(mockFreshName);
 
         CategoryDTO catDtoMock1 = new CategoryDTO();
         catDtoMock1.setId(1L);
-        catDtoMock1.setName("Fruits");
+        catDtoMock1.setName(mockFruitName);
 
         CategoryDTO catDtoMock2 = new CategoryDTO();
         catDtoMock2.setId(2L);
-        catDtoMock2.setName("Fresh");
+        catDtoMock2.setName(mockFreshName);
 
         List<Category> categoriesMock = Arrays.asList(catMock1, catMock2);
         when(catRepoMock.findAll()).thenReturn(categoriesMock);
 
         // When
         List<CategoryDTO> allCategories = categorySrv.getAllCategories();
+        System.out.printf("The Categories: %s",allCategories);
 
         // Then
         assertThat(allCategories).hasSize(2)

@@ -6,8 +6,9 @@ import guru.springfamework.domain.Category;
 import guru.springfamework.repositories.CategoryRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +20,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CategoryServiceImplTest {
+@RunWith(MockitoJUnitRunner.class)
+public class CategoryServiceAnnTest {
 
     @Mock
     private CategoryRepository catRepoMock;
@@ -28,38 +30,33 @@ public class CategoryServiceImplTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         categorySrv = new CategoryServiceImpl(catRepoMock, CategoryMapper.INSTANCE);
     }
 
     @Test
     public void getAllCategories() {
         // Given
-        final String mockFreshName = "Fresh";
-        final String mockFruitName = "Fruits";
-
         Category catMock1 = new Category();
         catMock1.setId(1L);
-        catMock1.setName(mockFruitName);
+        catMock1.setName("Fruits");
 
         Category catMock2 = new Category();
         catMock2.setId(2L);
-        catMock2.setName(mockFreshName);
+        catMock2.setName("Fresh");
 
         CategoryDTO catDtoMock1 = new CategoryDTO();
         catDtoMock1.setId(1L);
-        catDtoMock1.setName(mockFruitName);
+        catDtoMock1.setName("Fruits");
 
         CategoryDTO catDtoMock2 = new CategoryDTO();
         catDtoMock2.setId(2L);
-        catDtoMock2.setName(mockFreshName);
+        catDtoMock2.setName("Fresh");
 
         List<Category> categoriesMock = Arrays.asList(catMock1, catMock2);
         when(catRepoMock.findAll()).thenReturn(categoriesMock);
 
         // When
         List<CategoryDTO> allCategories = categorySrv.getAllCategories();
-        System.out.printf("The Categories: %s",allCategories);
 
         // Then
         assertThat(allCategories).hasSize(2)
