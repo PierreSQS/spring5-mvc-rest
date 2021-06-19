@@ -29,9 +29,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO getCategoryByName(String name) {
+        Category category = new Category();
+        category.setId(-1L);
+        category.setName("Category not found");
         Optional<Category> optCatbyName = categoryRepo.findByName(name);
 
         return categoryMapper.categoryToCategoryDTO(optCatbyName
-                .orElseThrow(() -> new RuntimeException("Category not found")));
+                .orElse(category));
     }
 }
