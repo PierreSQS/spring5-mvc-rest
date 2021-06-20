@@ -69,7 +69,7 @@ public class CategoryControllerMVCTest {
         // When and Then
         mockMvc.perform(get("/api/v1/categories/FruitMock"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.products[0].name").value(catDtoMockName))
+                .andExpect(jsonPath("$.name").value(catDtoMockName))
                 .andDo(print());
     }
 }
