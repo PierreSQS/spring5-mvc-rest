@@ -52,8 +52,8 @@ public class CategoryControllerMockitoAnnTest {
         // When and Then
         mockMvc.perform(get("/api/v1/categories").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Fruits"))
-                .andExpect(jsonPath("$[1].name").value("Fresh"))
+                .andExpect(jsonPath("$.categories[0].name").value("Fruits"))
+                .andExpect(jsonPath("$.categories[1].name").value("Fresh"))
                 .andDo(print());
     }
 
@@ -71,7 +71,7 @@ public class CategoryControllerMockitoAnnTest {
         // When and Then
         mockMvc.perform(get("/api/v1/categories/FruitMock"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(catDtoMockName))
+                .andExpect(jsonPath("$.products[0].name").value(catDtoMockName))
                 .andDo(print());
     }
 }

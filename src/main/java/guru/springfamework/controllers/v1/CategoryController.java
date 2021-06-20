@@ -1,12 +1,15 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CategoryDTO;
+import guru.springfamework.api.v1.model.CategoryListDTO;
+import guru.springfamework.api.v1.model.ProductDTO;
 import guru.springfamework.services.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,12 +23,14 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<CategoryDTO> getCategories() {
-        return categoryServ.getAllCategories();
+    public CategoryListDTO getCategories() {
+        return new CategoryListDTO(categoryServ.getAllCategories());
     }
 
     @GetMapping("{name}")
-    public CategoryDTO getCategoryByName(@PathVariable String name) {
-        return categoryServ.getCategoryByName(name);
+    public ProductDTO getCategoryByName(@PathVariable String name) {
+        List<CategoryDTO> products = new ArrayList<>();
+        products.add(categoryServ.getCategoryByName(name));
+        return new ProductDTO(products);
     }
 }
