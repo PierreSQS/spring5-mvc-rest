@@ -1,7 +1,9 @@
 package guru.springfamework.bootstrap;
 
 import guru.springfamework.domain.Category;
+import guru.springfamework.domain.Customer;
 import guru.springfamework.repositories.CategoryRepository;
+import guru.springfamework.repositories.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -14,13 +16,21 @@ import java.util.List;
 public class Bootstrap implements CommandLineRunner {
 
     private final CategoryRepository categoryRepo;
+    private final CustomerRepository customerRepo;
 
-    public Bootstrap(CategoryRepository categoryRepo) {
+    public Bootstrap(CategoryRepository categoryRepo, CustomerRepository customerRepo) {
         this.categoryRepo = categoryRepo;
+        this.customerRepo = customerRepo;
     }
 
     @Override
     public void run(String... args) {
+        loadData();
+
+    }
+
+    private void loadData() {
+        // load categories
         Category fruits = new Category();
         fruits.setName("Fruits");
 
@@ -40,6 +50,22 @@ public class Bootstrap implements CommandLineRunner {
 
         categoryRepo.saveAll(categories);
         log.info("Saved fruits: {}",categories);
+
+        // load Customers
+        Customer pierrot = new Customer();
+        pierrot.setFirstName("Pierrot");
+        pierrot.setLastName("Mongonnam");
+
+        Customer craig = new Customer();
+        craig.setFirstName("Craig");
+        craig.setLastName("Walls");
+
+        Customer kenkousen = new Customer();
+        kenkousen.setFirstName("Ken");
+        kenkousen.setLastName("Kousen");
+
+        final List<Customer> savedCustomers = customerRepo.saveAll(Arrays.asList(pierrot, craig, kenkousen));
+        log.info("Saved Customer: {}", savedCustomers);
 
     }
 }
