@@ -41,13 +41,15 @@ public class CustomerServiceTest {
         
         Customer custMock3 = new Customer();
         custMock3.setLastName("Customer Mock3");
-        
+        custMock3.setId(3L);
+
         when(customerRepoMock.findAll(Sort.by("lastName"))).thenReturn(Arrays.asList(custMock1,custMock2,custMock3));
 
         final List<CustomerDTO> customerDTOs = customerSrv.getCustomers();
 
         assertThat(customerDTOs).hasSize(3);
         assertThat(customerDTOs.get(0).getLastName()).isEqualTo("Customer Mock1");
+        assertThat(customerDTOs.get(2).getCustomerUrl()).isEqualTo("/api/v1/customers/3");
 
     }
 }

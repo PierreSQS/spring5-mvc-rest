@@ -54,7 +54,7 @@ public class CustomerControllerTest {
         // When and Then
         mockMvc.perform(get("/api/v1/customers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].lastName").value("Mock1"))
+                .andExpect(jsonPath("$.customers[0].lastName").value("Mock1"))
                 .andDo(print());
     }
 }

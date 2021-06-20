@@ -30,7 +30,7 @@ public class Bootstrap implements CommandLineRunner {
     }
 
     private void loadData() {
-        // load categories
+        // ----------- load categories -----------
         Category fruits = new Category();
         fruits.setName("Fruits");
 
@@ -51,7 +51,7 @@ public class Bootstrap implements CommandLineRunner {
         categoryRepo.saveAll(categories);
         log.info("Saved fruits: {}",categories);
 
-        // load Customers
+        // ----------- load Customers -----------
         Customer pierrot = new Customer();
         pierrot.setFirstName("Pierrot");
         pierrot.setLastName("Mongonnam");
