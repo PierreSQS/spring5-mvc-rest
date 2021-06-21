@@ -25,11 +25,31 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        loadData();
+        loadCategories();
+        loadCustomers();
 
     }
 
-    private void loadData() {
+    private void loadCustomers() {
+        // ----------- load Customers -----------
+        Customer pierrot = new Customer();
+        pierrot.setFirstName("Pierrot");
+        pierrot.setLastName("Mongonnam");
+
+        Customer craig = new Customer();
+        craig.setFirstName("Craig");
+        craig.setLastName("Walls");
+
+        Customer kenkousen = new Customer();
+        kenkousen.setFirstName("Ken");
+        kenkousen.setLastName("Kousen");
+
+        final List<Customer> savedCustomers = customerRepo.saveAll(Arrays.asList(pierrot, craig, kenkousen));
+        log.info("Saved Customer: {}", savedCustomers);
+
+    }
+
+    private void loadCategories() {
         // ----------- load categories -----------
         Category fruits = new Category();
         fruits.setName("Fruits");
@@ -51,21 +71,6 @@ public class Bootstrap implements CommandLineRunner {
         categoryRepo.saveAll(categories);
         log.info("Saved fruits: {}",categories);
 
-        // ----------- load Customers -----------
-        Customer pierrot = new Customer();
-        pierrot.setFirstName("Pierrot");
-        pierrot.setLastName("Mongonnam");
-
-        Customer craig = new Customer();
-        craig.setFirstName("Craig");
-        craig.setLastName("Walls");
-
-        Customer kenkousen = new Customer();
-        kenkousen.setFirstName("Ken");
-        kenkousen.setLastName("Kousen");
-
-        final List<Customer> savedCustomers = customerRepo.saveAll(Arrays.asList(pierrot, craig, kenkousen));
-        log.info("Saved Customer: {}", savedCustomers);
-
     }
+
 }

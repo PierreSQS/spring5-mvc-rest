@@ -8,17 +8,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(CustomerController.class)
@@ -57,4 +58,25 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.customers[0].lastName").value("Mock1"))
                 .andDo(print());
     }
+
+    @Test
+    public void getCustomerByIdGoodPath() throws Exception {
+        // Given
+        Long mockID = 12L;
+        String mockName = "Mock";
+        String mockCustUrl = "api/v1/customers/"+mockID;
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(mockID);
+        customerDTO.setLastName("Mock");
+        customerDTO.setCustomerUrl(mockCustUrl);
+        when(customerSrvMock.getCustomerById(anyLong())).thenReturn(customerDTO);
+
+        mockMvc.perform(get("/api/v1/customers/12"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.lastName").value(mockName))
+                .andExpect(jsonPath("$.customerUrl").value(mockCustUrl))
+                .andDo(print());
+    }
+
 }

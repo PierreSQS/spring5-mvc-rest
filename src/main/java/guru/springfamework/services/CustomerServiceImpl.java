@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    private static final String CUSTURL = "/api/v1/customers";
+    private static final String CUSTURL = "/api/v1/customers/";
     private final CustomerRepository customerRepo;
     private final CustomerMapper customerMapper;
 
@@ -26,11 +26,27 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> getCustomers() {
         List<Customer> customersBylastName = customerRepo.findAll(Sort.by("lastName"));
 
-        customersBylastName.forEach(cust -> cust.setCustomerUrl(CUSTURL+"/"+cust.getId()));
-        customerRepo.saveAll(customersBylastName);
-
         return customersBylastName.stream()
-                .map(customerMapper::customerToCustomerDTO)
+                .map(cust -> {
+                    CustomerDTO custDTO = customerMapper.customerToCustomerDTO(cust);
+                    custDTO.setCustomerUrl(CUSTURL+cust.getId());
+                    return custDTO;
+                })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomerDTO getCustomerById(Long id) {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(-1L);
+        customerDTO.setFirstName("Customer");
+        customerDTO.setLastName("Not Found");
+
+        return customerRepo.findById(id)
+                .map(customer -> {
+                    CustomerDTO custDTO = customerMapper.customerToCustomerDTO(customer);
+                    custDTO.setCustomerUrl(CUSTURL+customer.getId());
+                    return custDTO;
+                }).orElse(customerDTO);
     }
 }
