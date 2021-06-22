@@ -1,6 +1,7 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
+import guru.springfamework.domain.Customer;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,15 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static guru.springfamework.controllers.v1.AbstractRestControllerTest.asJsonString;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -60,7 +65,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void getCustomerByIdGoodPath() throws Exception {
+    public void getCustomerById() throws Exception {
         // Given
         Long mockID = 12L;
         String mockName = "Mock";
@@ -79,4 +84,28 @@ public class CustomerControllerTest {
                 .andDo(print());
     }
 
+
+    @Test
+    public void createCustomer() throws Exception{
+        Customer customer = new Customer();
+        customer.setFirstName("Customer");
+        customer.setLastName("To Create");
+
+/*
+        mockMvc.perform(post("/api/v1/customers").content(asJsonString(customer))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andDo(print());
+*/
+
+        MockHttpServletResponse response = mockMvc.perform(post("/api/v1/customers")
+                .content(asJsonString(customer)))
+                .andReturn()
+                .getResponse();
+
+        String contentAsString = response.getContentAsString();
+
+        System.out.println(contentAsString);
+
+    }
 }
