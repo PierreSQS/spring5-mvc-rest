@@ -33,4 +33,20 @@ public class CustomerMapperTest {
         assertThat(customerDTO.getFirstName()).isEqualTo(expectedCustDTO.getFirstName());
         assertThat(customerDTO.getLastName()).isEqualTo(expectedCustDTO.getLastName());
     }
+
+    @Test
+    public void customerDTOToCustomer() {
+        // Given
+        CustomerDTO custDTO = new CustomerDTO();
+        custDTO.setFirstName("Customer");
+        custDTO.setLastName("DTO");
+
+        // When
+        Customer customer = custMapper.customerDTOToCustomer(custDTO);
+
+        // Then
+        assertThat(customer).isNotNull();
+        assertThat(customer.getLastName()).isEqualTo("DTO");
+
+    }
 }

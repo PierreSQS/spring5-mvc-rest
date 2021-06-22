@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,10 +17,16 @@ public class CustomerServiceImpl implements CustomerService {
     private static final String CUSTURL = "/api/v1/customers/";
     private final CustomerRepository customerRepo;
     private final CustomerMapper customerMapper;
+    private final Function<Customer, CustomerDTO> customerCustomerDTOFunction;
 
     public CustomerServiceImpl(CustomerRepository customerRepo, CustomerMapper customerMapper) {
         this.customerRepo = customerRepo;
         this.customerMapper = customerMapper;
+        this.customerCustomerDTOFunction = cust -> {
+            CustomerDTO custDTO = customerMapper.customerToCustomerDTO(cust);
+            custDTO.setCustomerUrl(CUSTURL + cust.getId());
+            return custDTO;
+        };
     }
 
     @Override
@@ -27,11 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<Customer> customersBylastName = customerRepo.findAll(Sort.by("lastName"));
 
         return customersBylastName.stream()
-                .map(cust -> {
-                    CustomerDTO custDTO = customerMapper.customerToCustomerDTO(cust);
-                    custDTO.setCustomerUrl(CUSTURL+cust.getId());
-                    return custDTO;
-                })
+                .map(customerCustomerDTOFunction)
                 .collect(Collectors.toList());
     }
 
@@ -43,10 +46,12 @@ public class CustomerServiceImpl implements CustomerService {
         customerDTO.setLastName("Not Found");
 
         return customerRepo.findById(id)
-                .map(customer -> {
-                    CustomerDTO custDTO = customerMapper.customerToCustomerDTO(customer);
-                    custDTO.setCustomerUrl(CUSTURL+customer.getId());
-                    return custDTO;
-                }).orElse(customerDTO);
+                .map(customerCustomerDTOFunction).orElse(customerDTO);
+    }
+
+    @Override
+    public CustomerDTO createCustomer(CustomerDTO customerDTO) {
+        Customer savedCustomer = customerRepo.save(customerMapper.customerDTOToCustomer(customerDTO));
+        return customerMapper.customerToCustomerDTO(savedCustomer);
     }
 }

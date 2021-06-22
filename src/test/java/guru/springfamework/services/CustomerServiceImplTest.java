@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -88,4 +89,22 @@ public class CustomerServiceImplTest {
         assertThat(foundCustById.getLastName()).isEqualTo("Not Found");
     }
 
+    @Test
+    public void createCustomer() {
+        Customer customer = new Customer();
+        customer.setFirstName("Customer");
+        customer.setLastName("Mock");
+
+        CustomerDTO custDTO = new CustomerDTO();
+        custDTO.setFirstName(custDTO.getFirstName());
+        custDTO.setLastName(custDTO.getLastName());
+
+        when(customerRepoMock.save(any())).thenReturn(customer);
+
+        CustomerDTO savedCustMock = customerSrv.createCustomer(custDTO);
+
+        assertThat(savedCustMock).isNotNull();
+        assertThat(savedCustMock.getLastName()).isEqualTo("Mock");
+
+    }
 }
