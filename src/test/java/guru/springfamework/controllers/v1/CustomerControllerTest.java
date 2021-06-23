@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -88,20 +90,38 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         // Given
         final String custDTOMockUrl = "/api/v1/customers/10";
         CustomerDTO custDTOMock = new CustomerDTO();
-        custDTOMock.setId(10L);
         custDTOMock.setFirstName("Customer");
         custDTOMock.setLastName("To Create");
         custDTOMock.setCustomerUrl(custDTOMockUrl);
+
+        String jsonContent = asJsonString(custDTOMock);
 
         when(customerSrvMock.createCustomer(any())).thenReturn(custDTOMock);
 
         // When, Then
         mockMvc.perform(post("/api/v1/customers")
-                    .content(asJsonString(custDTOMock))
-                    .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.lastName").value("To Create"))
-                .andExpect(jsonPath("$.customerUrl", equalTo(custDTOMockUrl)))
-                .andDo(print());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonContent)).andDo(print());
+
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                //.content(asJsonString(custDTOMock))).andReturn().getResponse();
+                .content(jsonContent)).andDo(print());
+
+        MockHttpServletRequest request = mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonContent)).andReturn()
+                .getRequest();
+
+        MockHttpServletResponse response = mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                //.content(asJsonString(custDTOMock))).andReturn().getResponse();
+                .content(jsonContent)).andReturn()
+                .getResponse();
+
+        System.out.printf("the JSON-Content: %s%n",jsonContent);
+        System.out.printf("the Request: %s%n",request.getContentAsString());
+        System.out.printf("the Response: %s%n",response.getContentAsString());
+
     }
 }
