@@ -1,7 +1,6 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
-import guru.springfamework.domain.Customer;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,7 +18,6 @@ import java.util.List;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -100,24 +97,11 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
 
         // When, Then
         mockMvc.perform(post("/api/v1/customers")
-                        .content(asJsonString(custDTOMock))
-                        .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.lastName").value("To Create"))
-                    .andExpect(jsonPath("$.customerUrl", equalTo(custDTOMockUrl)))
-                    .andDo(print());
-
-
-/*
-        MockHttpServletResponse response = mockMvc.perform(post("/api/v1/customers")
                     .content(asJsonString(custDTOMock))
                     .contentType(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse();
-
-        String contentAsString = response.getContentAsString();
-        System.out.printf("%nthe response: %s",contentAsString);
-*/
-
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.lastName").value("To Create"))
+                .andExpect(jsonPath("$.customerUrl", equalTo(custDTOMockUrl)))
+                .andDo(print());
     }
 }
