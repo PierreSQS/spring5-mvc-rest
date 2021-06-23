@@ -101,14 +101,13 @@ public class CustomerControllerTest {
 
 /*
         MockHttpServletResponse response = mockMvc.perform(post("/api/v1/customers")
-                .content(asJsonString(customer)))
+                    .content(asJsonString(customer))
+                    .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse();
 
         String contentAsString = response.getContentAsString();
-
-        System.out.println(contentAsString);
+        System.out.printf("%nthe response: %s",contentAsString);
 */
-
     }
 }
