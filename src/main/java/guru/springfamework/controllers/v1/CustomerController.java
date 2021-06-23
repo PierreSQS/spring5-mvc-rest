@@ -31,7 +31,6 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO){
         CustomerDTO custDTO = customerSrv.createCustomer(customerDTO);
-        custDTO.setCustomerUrl("/api/v1/customers/"+custDTO.getId());
         return new ResponseEntity<>(custDTO, HttpStatus.CREATED);
 
     }

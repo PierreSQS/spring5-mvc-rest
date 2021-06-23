@@ -45,7 +45,7 @@ public class Bootstrap implements CommandLineRunner {
         kenkousen.setLastName("Kousen");
 
         final List<Customer> savedCustomers = customerRepo.saveAll(Arrays.asList(pierrot, craig, kenkousen));
-        log.info("Saved Customer: {}", savedCustomers);
+        log.info("Customers saved on Bootstrap: {}", savedCustomers);
 
     }
 
@@ -69,7 +69,7 @@ public class Bootstrap implements CommandLineRunner {
         List<Category> categories = Arrays.asList(fruits,dried,fresh,exotic,nuts);
 
         categoryRepo.saveAll(categories);
-        log.info("Saved fruits: {}",categories);
+        log.info("Product Categories saved on Bootstrap: {}",categories);
 
     }
 

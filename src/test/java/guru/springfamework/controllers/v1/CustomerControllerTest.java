@@ -110,31 +110,5 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                 .andExpect(jsonPath("$.lastName",equalTo("To Create")))
                 .andExpect(jsonPath("$.customerUrl", equalTo(custDTOMockUrl)))
                 .andDo(print());
-
-/*        mockMvc.perform(post("/api/v1/customers")
-                .contentType(MediaType.APPLICATION_JSON)
-                //.content(asJsonString(custDTOMock))).andReturn().getResponse();
-                .content(jsonContent)).andDo(print());
-
-        MockHttpServletRequest request = mockMvc.perform(post("/api/v1/customers")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonContent)).andReturn()
-                .getRequest();
-
-        MockHttpServletResponse response = mockMvc.perform(post("/api/v1/customers")
-                .contentType(MediaType.APPLICATION_JSON)
-                //.content(asJsonString(custDTOMock))).andReturn().getResponse();
-                .content(jsonContent)).andReturn()
-                .getResponse();
-
-        // Must be set before to transform it as String
-        request.setCharacterEncoding("UTF-8");
-
-        System.out.printf("%nthe JSON-Content: %s%n",jsonContent);
-        System.out.printf("the Request: %s%n",request.getContentAsString());
-        System.out.printf("the Response: %s%n%n",response.getContentAsString());
-
- */
-
     }
 }
