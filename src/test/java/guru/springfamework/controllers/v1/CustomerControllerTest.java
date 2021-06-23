@@ -92,10 +92,11 @@ public class CustomerControllerTest {
         customer.setLastName("To Create");
 
 
-        mockMvc.perform(post("/api/v1/customers").content(asJsonString(customer))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
+        mockMvc.perform(post("/api/v1/customers")
+                        .content(asJsonString(customer))
+                        .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andDo(print());
 
 
 /*
