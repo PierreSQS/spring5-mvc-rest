@@ -91,13 +91,14 @@ public class CustomerControllerTest {
         customer.setFirstName("Customer");
         customer.setLastName("To Create");
 
-/*
+
         mockMvc.perform(post("/api/v1/customers").content(asJsonString(customer))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
-*/
 
+
+/*
         MockHttpServletResponse response = mockMvc.perform(post("/api/v1/customers")
                 .content(asJsonString(customer)))
                 .andReturn()
@@ -106,6 +107,7 @@ public class CustomerControllerTest {
         String contentAsString = response.getContentAsString();
 
         System.out.println(contentAsString);
+*/
 
     }
 }
