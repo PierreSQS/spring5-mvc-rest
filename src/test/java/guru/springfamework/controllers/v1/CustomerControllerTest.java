@@ -119,9 +119,12 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                 .content(jsonContent)).andReturn()
                 .getResponse();
 
-        System.out.printf("the JSON-Content: %s%n",jsonContent);
+        // Must be set before to transform it as String
+        request.setCharacterEncoding("UTF-8");
+
+        System.out.printf("%nthe JSON-Content: %s%n",jsonContent);
         System.out.printf("the Request: %s%n",request.getContentAsString());
-        System.out.printf("the Response: %s%n",response.getContentAsString());
+        System.out.printf("the Response: %s%n%n",response.getContentAsString());
 
     }
 }
