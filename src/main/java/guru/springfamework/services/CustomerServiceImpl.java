@@ -4,6 +4,7 @@ import guru.springfamework.api.v1.mapper.CustomerMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.domain.Customer;
 import guru.springfamework.repositories.CustomerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +13,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CustomerServiceImpl implements CustomerService {
 
     private static final String CUSTURL = "/api/v1/customers/";
     private final CustomerRepository customerRepo;
     private final CustomerMapper customerMapper;
-    private final Function<Customer, CustomerDTO> customerCustomerDTOFunction;
+    private final Function<Customer, CustomerDTO> custToCustDTOFunct;
 
     public CustomerServiceImpl(CustomerRepository customerRepo, CustomerMapper customerMapper) {
         this.customerRepo = customerRepo;
         this.customerMapper = customerMapper;
-        this.customerCustomerDTOFunction = cust -> {
+        this.custToCustDTOFunct = cust -> {
             CustomerDTO custDTO = customerMapper.customerToCustomerDTO(cust);
             custDTO.setCustomerUrl(CUSTURL + cust.getId());
             return custDTO;
@@ -34,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<Customer> customersBylastName = customerRepo.findAll(Sort.by("lastName"));
 
         return customersBylastName.stream()
-                .map(customerCustomerDTOFunction)
+                .map(custToCustDTOFunct)
                 .collect(Collectors.toList());
     }
 
@@ -46,12 +48,14 @@ public class CustomerServiceImpl implements CustomerService {
         customerDTO.setLastName("Not Found");
 
         return customerRepo.findById(id)
-                .map(customerCustomerDTOFunction).orElse(customerDTO);
+                .map(custToCustDTOFunct).orElse(customerDTO);
     }
 
     @Override
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
         Customer savedCustomer = customerRepo.save(customerMapper.customerDTOToCustomer(customerDTO));
+        log.info("the saved Customer: {}", savedCustomer);
+
         return customerMapper.customerToCustomerDTO(savedCustomer);
     }
 }

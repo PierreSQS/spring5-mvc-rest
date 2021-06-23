@@ -92,18 +92,26 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO custDTOMock = new CustomerDTO();
         custDTOMock.setFirstName("Customer");
         custDTOMock.setLastName("To Create");
-        custDTOMock.setCustomerUrl(custDTOMockUrl);
+
+        CustomerDTO returnedCustDTO = new CustomerDTO();
+        returnedCustDTO.setId(10L);
+        returnedCustDTO.setFirstName(custDTOMock.getFirstName());
+        returnedCustDTO.setLastName(custDTOMock.getLastName());
+        returnedCustDTO.setCustomerUrl(custDTOMockUrl);
 
         String jsonContent = asJsonString(custDTOMock);
 
-        when(customerSrvMock.createCustomer(any())).thenReturn(custDTOMock);
+        when(customerSrvMock.createCustomer(custDTOMock)).thenReturn(returnedCustDTO);
 
         // When, Then
         mockMvc.perform(post("/api/v1/customers")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonContent)).andDo(print());
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonContent))
+                .andExpect(jsonPath("$.lastName",equalTo("To Create")))
+                .andExpect(jsonPath("$.customerUrl", equalTo(custDTOMockUrl)))
+                .andDo(print());
 
-        mockMvc.perform(post("/api/v1/customers")
+/*        mockMvc.perform(post("/api/v1/customers")
                 .contentType(MediaType.APPLICATION_JSON)
                 //.content(asJsonString(custDTOMock))).andReturn().getResponse();
                 .content(jsonContent)).andDo(print());
@@ -125,6 +133,8 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         System.out.printf("%nthe JSON-Content: %s%n",jsonContent);
         System.out.printf("the Request: %s%n",request.getContentAsString());
         System.out.printf("the Response: %s%n%n",response.getContentAsString());
+
+ */
 
     }
 }
