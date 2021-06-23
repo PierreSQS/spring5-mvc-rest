@@ -3,6 +3,8 @@ package guru.springfamework.controllers.v1;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.api.v1.model.CustomerListDTO;
 import guru.springfamework.services.CustomerService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,8 +29,10 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CustomerDTO createCustomer(@RequestBody CustomerDTO customer){
-        return customer;
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO){
+        CustomerDTO custDTO = customerSrv.createCustomer(customerDTO);
+        custDTO.setCustomerUrl("/api/v1/customers/"+custDTO.getId());
+        return new ResponseEntity<>(custDTO, HttpStatus.CREATED);
 
     }
 }

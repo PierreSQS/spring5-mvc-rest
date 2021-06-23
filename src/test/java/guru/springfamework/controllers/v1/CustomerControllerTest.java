@@ -17,7 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
-import static guru.springfamework.controllers.v1.AbstractRestControllerTest.asJsonString;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(CustomerController.class)
-public class CustomerControllerTest {
+public class CustomerControllerTest extends AbstractRestControllerTest {
 
     @MockBean
     private CustomerService customerSrvMock;
@@ -87,21 +88,29 @@ public class CustomerControllerTest {
 
     @Test
     public void createCustomer() throws Exception{
-        Customer customer = new Customer();
-        customer.setFirstName("Customer");
-        customer.setLastName("To Create");
+        // Given
+        final String custDTOMockUrl = "/api/v1/customers/10";
+        CustomerDTO custDTOMock = new CustomerDTO();
+        custDTOMock.setId(10L);
+        custDTOMock.setFirstName("Customer");
+        custDTOMock.setLastName("To Create");
+        custDTOMock.setCustomerUrl(custDTOMockUrl);
 
+        when(customerSrvMock.createCustomer(any())).thenReturn(custDTOMock);
 
+        // When, Then
         mockMvc.perform(post("/api/v1/customers")
-                        .content(asJsonString(customer))
+                        .content(asJsonString(custDTOMock))
                         .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.lastName").value("To Create"))
+                    .andExpect(jsonPath("$.customerUrl", equalTo(custDTOMockUrl)))
                     .andDo(print());
 
 
 /*
         MockHttpServletResponse response = mockMvc.perform(post("/api/v1/customers")
-                    .content(asJsonString(customer))
+                    .content(asJsonString(custDTOMock))
                     .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse();
@@ -109,5 +118,6 @@ public class CustomerControllerTest {
         String contentAsString = response.getContentAsString();
         System.out.printf("%nthe response: %s",contentAsString);
 */
+
     }
 }
