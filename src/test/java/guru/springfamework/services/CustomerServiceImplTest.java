@@ -99,7 +99,7 @@ public class CustomerServiceImplTest {
         custDTO.setFirstName(custDTO.getFirstName());
         custDTO.setLastName(custDTO.getLastName());
 
-        when(customerRepoMock.save(any())).thenReturn(customer);
+        when(customerRepoMock.save(any(Customer.class))).thenReturn(customer);
 
         CustomerDTO savedCustMock = customerSrv.createCustomer(custDTO);
 
