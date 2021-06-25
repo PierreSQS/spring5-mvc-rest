@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -61,5 +62,26 @@ public class CustomerServiceImpl implements CustomerService {
 
         log.info("the created CustomerDTO {}",createdDTO);
         return createdDTO;
+    }
+
+    @Override
+    public CustomerDTO updateCustomerByDTO(Long id, CustomerDTO customerDTO) {
+        Customer updatedCust = customerMapper.customerDTOToCustomer(customerDTO);
+        Optional<Customer> optCustToUpdate = customerRepo.findById(id);
+
+        if (optCustToUpdate.isPresent()){
+            Customer foundCustDB = optCustToUpdate.get();
+            foundCustDB.setFirstName(updatedCust.getFirstName());
+            foundCustDB.setLastName(updatedCust.getLastName());
+            Customer savedCust = customerRepo.save(foundCustDB);
+            CustomerDTO returnCustDTO = customerMapper.customerToCustomerDTO(savedCust);
+            returnCustDTO.setCustomerUrl(CUSTURL+savedCust.getId());
+            return returnCustDTO;
+        } else {
+            Customer newCustomer = customerRepo.save(updatedCust);
+            customerDTO.setId(newCustomer.getId());
+            customerDTO.setCustomerUrl(CUSTURL+newCustomer.getId());
+            return customerDTO;
+        }
     }
 }

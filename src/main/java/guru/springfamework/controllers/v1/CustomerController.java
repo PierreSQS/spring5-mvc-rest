@@ -34,4 +34,9 @@ public class CustomerController {
         return new ResponseEntity<>(custDTO, HttpStatus.CREATED);
 
     }
+
+    @PutMapping("{id}")
+    public CustomerDTO updateCustomerById(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
+        return customerSrv.updateCustomerByDTO(id, customerDTO);
+    }
 }

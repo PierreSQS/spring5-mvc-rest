@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerServiceImplTest {
 
+    public static final String  CUSTURL = "/api/v1/customers/";
+
     @Mock
     private CustomerRepository customerRepoMock;
 
@@ -52,7 +54,7 @@ public class CustomerServiceImplTest {
 
         assertThat(customerDTOs).hasSize(3);
         assertThat(customerDTOs.get(0).getLastName()).isEqualTo("Customer Mock1");
-        assertThat(customerDTOs.get(2).getCustomerUrl()).isEqualTo("/api/v1/customers/3");
+        assertThat(customerDTOs.get(2).getCustomerUrl()).isEqualTo(CUSTURL+custMock3.getId());
 
     }
 
@@ -106,5 +108,28 @@ public class CustomerServiceImplTest {
         assertThat(savedCustMock).isNotNull();
         assertThat(savedCustMock.getLastName()).isEqualTo("Mock");
 
+    }
+
+    @Test
+    public void updateCustomerByDTOGoodPath() {
+        // Given
+        Customer custoToUpdate = new Customer();
+        custoToUpdate.setId(10L);
+        custoToUpdate.setFirstName("Customer");
+        custoToUpdate.setLastName("To Update");
+
+        when(customerRepoMock.findById(custoToUpdate.getId())).thenReturn(Optional.of(custoToUpdate));
+        when(customerRepoMock.save(custoToUpdate)).thenReturn(custoToUpdate);
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(custoToUpdate.getFirstName());
+        customerDTO.setLastName(custoToUpdate.getLastName());
+
+        // When
+        CustomerDTO updatedCustDTO = customerSrv.updateCustomerByDTO(10L,customerDTO);
+
+        // Then
+        assertThat(updatedCustDTO.getCustomerUrl()).isEqualTo(CUSTURL+updatedCustDTO.getId());
+        assertThat(updatedCustDTO.getLastName()).isEqualTo("To Update");
     }
 }

@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,8 +21,7 @@ import java.util.List;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -107,5 +109,41 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                 .andExpect(jsonPath("$.lastName",equalTo("To Create")))
                 .andExpect(jsonPath("$.customerUrl", equalTo(custDTOMockUrl)))
                 .andDo(print());
+    }
+
+    @Test
+    public void updateCustomerById() throws Exception {
+        // Given
+        CustomerDTO pCustDTO = new CustomerDTO();
+        pCustDTO.setFirstName("Customer");
+        pCustDTO.setLastName("To Update");
+
+        CustomerDTO retCustDTO = new CustomerDTO();
+        retCustDTO.setId(8L);
+        retCustDTO.setFirstName("Customer");
+        retCustDTO.setLastName("To Update");
+        retCustDTO.setCustomerUrl("/api/v1/customers/8");
+        when(customerSrvMock.updateCustomerByDTO(retCustDTO.getId(), pCustDTO)).thenReturn(retCustDTO);
+
+
+        // When
+        ResultActions actions = mockMvc.perform(put("/api/v1/customers/8")
+                .content(asJsonString(pCustDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+       actions.andExpect(status().isOk())
+               .andExpect(jsonPath("$.lastName").value("To Update"))
+               .andExpect(jsonPath("$.customerUrl").value("/api/v1/customers/8"))
+               .andDo(print());
+
+        MockHttpServletRequest request = actions.andReturn().getRequest();
+        request.setCharacterEncoding("UTF-8");
+
+        MockHttpServletResponse response = actions.andReturn().getResponse();
+
+        System.out.printf("%nthe Request: %s%n",request.getContentAsString());
+        System.out.printf("the Response: %s%n%n",response.getContentAsString());
+
     }
 }
