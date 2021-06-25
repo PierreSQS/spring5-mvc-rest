@@ -118,8 +118,7 @@ public class CustomerServiceImplTest {
         custoToUpdate.setFirstName("Customer");
         custoToUpdate.setLastName("To Update");
 
-        when(customerRepoMock.findById(custoToUpdate.getId())).thenReturn(Optional.of(custoToUpdate));
-        when(customerRepoMock.save(custoToUpdate)).thenReturn(custoToUpdate);
+        when(customerRepoMock.save(any(Customer.class))).thenReturn(custoToUpdate);
 
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName(custoToUpdate.getFirstName());
