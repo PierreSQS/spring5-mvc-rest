@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+    public static final String BASE_CUST_URL = "/api/v1/customer/";
     private final CustomerMapper customerMapper;
     private final CustomerRepository customerRepository;
 
@@ -30,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .stream()
                 .map(customer -> {
                    CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
-                   customerDTO.setCustomerUrl("/api/v1/customer/" + customer.getId());
+                   customerDTO.setCustomerUrl(BASE_CUST_URL + customer.getId());
                    return customerDTO;
                 })
                 .collect(Collectors.toList());
@@ -43,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customerMapper::customerToCustomerDTO)
                 .map(customerDTO -> {
                     //set API URL
-                    customerDTO.setCustomerUrl("/api/v1/customer/" + id);
+                    customerDTO.setCustomerUrl(BASE_CUST_URL + id);
                     return customerDTO;
                 })
                 .orElseThrow(RuntimeException::new); //todo implement better exception handling
@@ -60,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         CustomerDTO returnDto = customerMapper.customerToCustomerDTO(savedCustomer);
 
-        returnDto.setCustomerUrl("/api/v1/customer/" + savedCustomer.getId());
+        returnDto.setCustomerUrl(BASE_CUST_URL + savedCustomer.getId());
 
         return returnDto;
     }
