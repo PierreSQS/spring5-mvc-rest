@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,22 +28,22 @@ public class CustomerServiceImplTest {
     CustomerService customerService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         customerService = new CustomerServiceImpl(customerMapper, customerRepository);
     }
 
     @Test
-    public void getAllCustomers() throws Exception {
+    public void getAllCustomers() {
         //given
         Customer customer1 = new Customer();
-        customer1.setId(1l);
+        customer1.setId(1L);
         customer1.setFirstname("Michale");
         customer1.setLastname("Weston");
 
         Customer customer2 = new Customer();
-        customer2.setId(2l);
+        customer2.setId(2L);
         customer2.setFirstname("Sam");
         customer2.setLastname("Axe");
 
@@ -57,14 +58,14 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    public void getCustomerById() throws Exception {
+    public void getCustomerById() {
         //given
         Customer customer1 = new Customer();
-        customer1.setId(1l);
+        customer1.setId(1L);
         customer1.setFirstname("Michale");
         customer1.setLastname("Weston");
 
-        when(customerRepository.findById(anyLong())).thenReturn(java.util.Optional.ofNullable(customer1));
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer1));
 
         //when
         CustomerDTO customerDTO = customerService.getCustomerById(1L);
@@ -73,7 +74,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    public void createNewCustomer() throws Exception {
+    public void createNewCustomer() {
 
         //given
         CustomerDTO customerDTO = new CustomerDTO();
@@ -82,7 +83,7 @@ public class CustomerServiceImplTest {
         Customer savedCustomer = new Customer();
         savedCustomer.setFirstname(customerDTO.getFirstname());
         savedCustomer.setLastname(customerDTO.getLastname());
-        savedCustomer.setId(1l);
+        savedCustomer.setId(1L);
 
         when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
@@ -95,7 +96,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    public void saveCustomerByDTO() throws Exception {
+    public void saveCustomerByDTO() {
 
         //given
         CustomerDTO customerDTO = new CustomerDTO();
@@ -104,7 +105,7 @@ public class CustomerServiceImplTest {
         Customer savedCustomer = new Customer();
         savedCustomer.setFirstname(customerDTO.getFirstname());
         savedCustomer.setLastname(customerDTO.getLastname());
-        savedCustomer.setId(1l);
+        savedCustomer.setId(1L);
 
         when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
