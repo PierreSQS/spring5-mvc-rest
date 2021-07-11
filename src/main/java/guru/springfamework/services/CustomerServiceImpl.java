@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by jt on 9/27/17.
+ * Extended by Pierrot on 7/11/21.
  */
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -72,5 +72,19 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setId(id);
 
         return saveAndReturnDTO(customer);
+    }
+
+    @Override
+    public CustomerDTO patchCustomer(Long id, CustomerDTO customerDTO) {
+        return customerRepository.findById(id).map(customer -> {
+            if (customerDTO.getFirstname() != null){
+                customer.setFirstname(customerDTO.getFirstname());
+            }
+
+            if (customerDTO.getLastname() != null){
+                customer.setLastname(customerDTO.getLastname());
+            }
+            return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+        }).orElseThrow(() -> new RuntimeException(""));
     }
 }
