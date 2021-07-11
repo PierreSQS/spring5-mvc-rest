@@ -139,6 +139,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
 
         // When, Then
         mockMvc.perform(patch("/api/v1/customers/1")
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .content(jsonUpdate))
                 .andExpect(status().isOk())
                 .andDo(print());
