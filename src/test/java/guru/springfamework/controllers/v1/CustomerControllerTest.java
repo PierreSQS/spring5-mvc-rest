@@ -13,8 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -129,19 +128,29 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void testPatchCustomerFirstName() throws Exception {
+        final String newFirstName = "UpdateMock";
+        final Long ID_TO_FIND = 1L;
+        final String customerUrl = "/api/v1/customers/"+ID_TO_FIND;
+
         // Given
         CustomerDTO newCustDTOMock = new CustomerDTO();
-        newCustDTOMock.setFirstname("UpdateMock");
+        newCustDTOMock.setFirstname(newFirstName);
+        newCustDTOMock.setCustomerUrl(customerUrl);
+
 
         String jsonUpdate = asJsonString(newCustDTOMock);
         System.out.printf("#### the JSON-Content: %s #######%n",jsonUpdate);
 
 
+        when(customerService.patchCustomer(ID_TO_FIND,newCustDTOMock)).thenReturn(newCustDTOMock);
+
         // When, Then
-        mockMvc.perform(patch("/api/v1/customers/1")
+        mockMvc.perform(patch(customerUrl)
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .content(jsonUpdate))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstname", equalTo(newFirstName)))
+                .andExpect(jsonPath("$.customer_url",equalTo(customerUrl)))
                 .andDo(print());
     }
 }
