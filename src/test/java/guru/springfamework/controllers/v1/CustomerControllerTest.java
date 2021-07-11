@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,7 +34,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
     MockMvc mockMvc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
@@ -124,5 +125,21 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                 .andExpect(jsonPath("$.firstname", equalTo("Fred")))
                 .andExpect(jsonPath("$.lastname", equalTo("Flintstone")))
                 .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
+    }
+
+    @Test
+    public void testPatchCustomerFirstName() throws Exception {
+        // Given
+        CustomerDTO newCustDTOMock = new CustomerDTO();
+        newCustDTOMock.setFirstname("UpdateMock");
+
+        String jsonUpdate = asJsonString(newCustDTOMock);
+        System.out.printf("#### the JSON-Content: %s #######%n",jsonUpdate);
+
+
+        // When, Then
+        mockMvc.perform(patch("/api/v1/customers/1"))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }
