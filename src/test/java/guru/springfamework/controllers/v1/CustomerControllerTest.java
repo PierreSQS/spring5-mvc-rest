@@ -138,7 +138,8 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
 
 
         // When, Then
-        mockMvc.perform(patch("/api/v1/customers/1"))
+        mockMvc.perform(patch("/api/v1/customers/1")
+                    .content(jsonUpdate))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
