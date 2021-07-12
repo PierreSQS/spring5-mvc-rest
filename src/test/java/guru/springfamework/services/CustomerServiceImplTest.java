@@ -21,6 +21,12 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class CustomerServiceImplTest {
+    static final String ORIGINAL_LN = "originalLN";
+    static final String ORIGINAL_FN = "originalFN";
+    static final String UPDATED_LN = "updatedLN";
+    static final String UPDATED_FN = "updatedFN";
+    static final long ID_TO_FIND = 1L;
+    static final String CUST_DTO_URL= "/api/v1/customers/"+ID_TO_FIND;
 
     @Mock
     CustomerRepository customerRepository;
@@ -121,9 +127,6 @@ public class CustomerServiceImplTest {
 
     @Test
     public void patchCustomerByFirstName() {
-        final String ORIGINAL_FN = "originalFN";
-        final String UPDATED_FN = "updatedFN";
-
         // THIS Customer-ID MUST BE THE SAME DURING THE TEST!!!!
         // ID of the found Customer in the DB that we want to UPDATE!!!
         final long ID = 1L;
@@ -133,45 +136,47 @@ public class CustomerServiceImplTest {
         Customer toUpdateCustMock = new Customer();
         toUpdateCustMock.setId(ID);
         toUpdateCustMock.setFirstname(ORIGINAL_FN);
+        toUpdateCustMock.setLastname(ORIGINAL_LN);
 
         System.out.printf("%nfound customer to update BY FIRSTNAME: %s%n",toUpdateCustMock);
 
-        // updated Customer Mock
-        Customer updatedCustMock = new Customer();
-        updatedCustMock.setId(1L);
-        updatedCustMock.setFirstname(UPDATED_FN);
+        // new Customer Mock
+        Customer newCustomerMock = new Customer();
+        newCustomerMock.setId(ID);
+        newCustomerMock.setFirstname(UPDATED_FN);
+        newCustomerMock.setLastname(toUpdateCustMock.getLastname());
 
         // CustomerDTO of the above updated customer
-        CustomerDTO updatedCustDTOMock = new CustomerDTO();
-        updatedCustDTOMock.setFirstname(updatedCustMock.getFirstname());
+        CustomerDTO newCustDTOMock = new CustomerDTO();
+        newCustDTOMock.setFirstname(newCustomerMock.getFirstname());
+        newCustDTOMock.setCustomerUrl(CUST_DTO_URL);
 
         // search and get the customer to update
         when(customerRepository.findById(toUpdateCustMock.getId())).thenReturn(Optional.of(toUpdateCustMock));
 
         // save the updated customer
-        when(customerRepository.save(updatedCustMock)).thenReturn(updatedCustMock);
+        when(customerRepository.save(newCustomerMock)).thenReturn(newCustomerMock);
 
         // when
-        CustomerDTO updatedCustomerDTO = customerService.patchCustomer(1L, updatedCustDTOMock);
+        CustomerDTO newCustomerDTO = customerService.patchCustomer(ID, newCustDTOMock);
 
-        System.out.printf("The returned DTO of the updated Customer By FIRSTNAME: %s%n",updatedCustomerDTO);
+        System.out.printf("The returned DTO of the updated Customer By FIRSTNAME: %s%n",newCustomerDTO);
 
         // then
         // the Cust DTO FN = to Update Cust Mock FN (the to Update should have been updated)
-        assertEquals(updatedCustomerDTO.getFirstname(), toUpdateCustMock.getFirstname());
+        assertEquals(newCustomerDTO.getFirstname(), toUpdateCustMock.getFirstname());
 
         // to Update Cust Mock FN != Original FN -> (the to Update FN should != Original FN)
         assertThat(toUpdateCustMock.getFirstname(), not(equalTo(ORIGINAL_FN)));
 
-        // the to Update LN should stay null, since not set (we patch the FN)
-        assertNull(toUpdateCustMock.getLastname());
+        // the to Update LN should not change (we patch the FN)
+        assertThat(toUpdateCustMock.getLastname(),equalTo(ORIGINAL_LN));
+
+        assertThat(newCustomerDTO.getCustomerUrl(), equalTo(CUST_DTO_URL));
     }
 
     @Test
     public void patchCustomerByLastName() {
-        final String ORIGINAL_LN = "originalLN";
-        final String UPDATED_LN = "updatedLN";
-
         // THIS Customer-ID MUST BE THE SAME DURING THE TEST!!!!
         // ID of the found Customer in the DB that we want to UPDATE!!!
         final long ID = 1L;
@@ -181,13 +186,15 @@ public class CustomerServiceImplTest {
         Customer toUpdateCust = new Customer();
         toUpdateCust.setId(ID);
         toUpdateCust.setLastname(ORIGINAL_LN);
+        toUpdateCust.setFirstname(ORIGINAL_FN);
 
         System.out.printf("%nfound customer to update BY LASTNAME: %s%n",toUpdateCust);
 
         // updated Customer
         Customer updatedCust = new Customer();
-        updatedCust.setId(1L);
+        updatedCust.setId(ID);
         updatedCust.setLastname(UPDATED_LN);
+        updatedCust.setFirstname(toUpdateCust.getFirstname());
 
         // CustomerDTO of the above updated customer
         CustomerDTO updatedCustDTO = new CustomerDTO();
@@ -200,7 +207,7 @@ public class CustomerServiceImplTest {
         when(customerRepository.save(updatedCust)).thenReturn(updatedCust);
 
         // when
-        CustomerDTO updatedCustomerDTO = customerService.patchCustomer(1L, updatedCustDTO);
+        CustomerDTO updatedCustomerDTO = customerService.patchCustomer(ID, updatedCustDTO);
 
         System.out.printf("The returned DTO of the updated Customer By LASTNAME: %s%n",updatedCustomerDTO);
 
@@ -211,7 +218,9 @@ public class CustomerServiceImplTest {
         // LN != Original LN (we patch the LN)
         assertThat(toUpdateCust.getLastname(), not(equalTo(ORIGINAL_LN)));
 
-        // FN stays null since not set in the test (we patch the LN)
-        assertNull(toUpdateCust.getFirstname());
+        // FN stays should not change (we patch the LN)
+        assertThat(toUpdateCust.getFirstname(),equalTo(ORIGINAL_FN));
+
+        assertThat(updatedCustomerDTO.getCustomerUrl(), equalTo(CUST_DTO_URL));
     }
 }
