@@ -13,11 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Optional;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataJpaTest
@@ -54,18 +53,10 @@ public class CustomerServiceImplIT {
         newCustomer.setFirstname(NEW_FN);
 
         // Customer to Update (existing in the DB)
-        Customer toUpdateCustomer = null;
+        Customer toUpdateCustomer = customerRepository.getOne(ID_TO_FIND);
+        assertNotNull("Customer not found. Patch Impossible!!!",toUpdateCustomer);
 
-        // Check if customer exists
-        Optional<Customer> optionalCustomer = customerRepository.findById(ID_TO_FIND);
-
-        if (optionalCustomer.isPresent()){
-            toUpdateCustomer = optionalCustomer.get();
-            System.out.printf("######## found Customer: %s #########%n",toUpdateCustomer);
-        } else {
-            fail("Customer not found. Patch Impossible!!!");
-        }
-
+        System.out.printf("######## found Customer: %s #########%n",toUpdateCustomer);
 
         // When
         final CustomerDTO customerDTO =
@@ -92,16 +83,8 @@ public class CustomerServiceImplIT {
         newCustomer.setLastname(NEW_LN);
 
         // Customer to Update (existing in the DB)
-        Customer toUpdateCustomer = null;
-        Optional<Customer> optionalCustomer = customerRepository.findById(ID_TO_FIND);
-
-        // Check if customer exists
-        if (optionalCustomer.isPresent()){
-            toUpdateCustomer = optionalCustomer.get();
-            System.out.printf("######## found Customer: %s #########%n",toUpdateCustomer);
-        } else {
-            fail("Customer not found. Patch Impossible!!!");
-        }
+        Customer toUpdateCustomer = customerRepository.getOne(ID_TO_FIND);
+        assertNotNull("Customer not found. Patch Impossible!!!",toUpdateCustomer);
 
 
         // When
