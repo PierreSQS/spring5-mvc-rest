@@ -2,14 +2,16 @@ package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.services.CustomerService;
+import guru.springfamework.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
@@ -17,27 +19,24 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebMvcTest(CustomerController.class)
 public class CustomerControllerTest extends AbstractRestControllerTest {
 
-    @Mock
+    @MockBean
     CustomerService customerService;
 
-    @InjectMocks
-    CustomerController customerController;
-
+    @Autowired
     MockMvc mockMvc;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
     }
 
     @Test
@@ -78,6 +77,14 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo("Michale")));
+    }
+
+    @Test
+    public void testGetCustomerByIdNotFound() throws Exception {
+        when(customerService.getCustomerById(55L)).thenThrow(ResourceNotFoundException.class);
+        mockMvc.perform(get(CustomerController.BASE_URL+"/55"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 
     @Test
