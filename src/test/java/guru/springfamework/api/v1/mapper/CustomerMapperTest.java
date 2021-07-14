@@ -13,7 +13,7 @@ public class CustomerMapperTest {
     CustomerMapper customerMapper = CustomerMapper.INSTANCE;
 
     @Test
-    public void customerToCustomerDTO() throws Exception {
+    public void customerToCustomerDTO() {
         //given
         Customer customer = new Customer();
         customer.setFirstname(FIRSTNAME);
