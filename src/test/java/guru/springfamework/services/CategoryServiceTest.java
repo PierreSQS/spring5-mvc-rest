@@ -27,14 +27,14 @@ public class CategoryServiceTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         categoryService = new CategoryServiceImpl(CategoryMapper.INSTANCE, categoryRepository);
     }
 
     @Test
-    public void getAllCategories() throws Exception {
+    public void getAllCategories() {
 
         //given
         List<Category> categories = Arrays.asList(new Category(), new Category(), new Category());
@@ -50,7 +50,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void getCategoryByName() throws Exception {
+    public void getCategoryByName() {
 
         //given
         Category category = new Category();
