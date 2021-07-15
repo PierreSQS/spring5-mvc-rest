@@ -57,12 +57,15 @@ public class VendorServiceImplTest {
         // Given
         Vendor vendor1 = new Vendor();
         vendor1.setName("Banana Mock Ltd");
+        vendor1.setId(1L);
 
         Vendor vendor2 = new Vendor();
         vendor2.setName("Guava Mock Ltd.");
+        vendor2.setId(2L);
 
         Vendor vendor3 = new Vendor();
         vendor3.setName("Ghana Mock Inc.");
+        vendor3.setId(3L);
 
         when(vendorRepoMock.findAll()).thenReturn(Arrays.asList(vendor1,vendor2,vendor3));
 
@@ -72,5 +75,7 @@ public class VendorServiceImplTest {
         // Then
         assertThat(allVendorDTOs.getVendors()).hasSize(3);
         assertThat(allVendorDTOs.getVendors().get(2).getName()).isEqualTo(vendor3.getName());
+        // Just for Documentation. Doesn't work at moment
+        assertThat(allVendorDTOs.getVendors()).extracting("vendorUrl").isNotNull();
     }
 }
