@@ -13,4 +13,6 @@ public interface VendorService {
 
     VendorListDTO getAllVendors();
 
+    VendorDTO createNewVendor(VendorDTO vendorDTO);
+
 }

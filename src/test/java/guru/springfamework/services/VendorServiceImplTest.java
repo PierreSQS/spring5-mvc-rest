@@ -14,8 +14,11 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static guru.springfamework.controllers.v1.VendorController.BASE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -77,5 +80,30 @@ public class VendorServiceImplTest {
         assertThat(allVendorDTOs.getVendors().get(2).getName()).isEqualTo(vendor3.getName());
         // Just for Documentation. Doesn't work at moment
         assertThat(allVendorDTOs.getVendors()).extracting("vendorUrl").isNotNull();
+    }
+
+    @Test
+    public void createNewVendor() {
+        final String vendorName = "Mock Inc.";
+
+        // Given
+        Vendor vendorMock = new Vendor();
+        vendorMock.setName(vendorName);
+        vendorMock.setId(1L);
+
+        when(vendorRepoMock.save(any())).thenReturn(vendorMock);
+
+        VendorDTO vendorDTOMock = new VendorDTO();
+        vendorDTOMock.setName(vendorMock.getName());
+        vendorDTOMock.setVendorUrl(BASE_URL +"/"+vendorMock.getId());
+
+        //When
+        VendorDTO newVendorDTO = vendorSrv.createNewVendor(vendorDTOMock);
+
+        // Then
+        assertThat(newVendorDTO.getName()).isEqualTo(vendorDTOMock.getName());
+        assertThat(newVendorDTO.getVendorUrl()).contains(BASE_URL);
+
+        verify(vendorRepoMock).save(any());
     }
 }

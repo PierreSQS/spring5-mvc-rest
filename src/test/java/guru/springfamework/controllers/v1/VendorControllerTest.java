@@ -9,24 +9,26 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
 import static guru.springfamework.controllers.v1.VendorController.BASE_URL;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(VendorController.class)
-public class VendorControllerTest {
+public class VendorControllerTest extends AbstractRestControllerTest{
 
     @MockBean
     VendorService vendorService;
@@ -77,4 +79,24 @@ public class VendorControllerTest {
 //               .andExpect(jsonPath("$.vendors[1].vendor_url", is(not(nullValue()))))
                 .andDo(print());
     }
+
+    @Test
+    public void createNewVendor() throws Exception {
+        // Given
+        VendorDTO vendorDTOMock = new VendorDTO();
+        vendorDTOMock.setName("Mock Inc.");
+        vendorDTOMock.setVendorUrl(BASE_URL+"/1");
+
+        when(vendorService.createNewVendor(vendorDTOMock)).thenReturn(vendorDTOMock);
+
+        //When, Then
+        mockMvc.perform(post(BASE_URL)
+                    .content(asJsonString(vendorDTOMock))
+                    .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name",equalTo(vendorDTOMock.getName())))
+                .andExpect(jsonPath("$.vendor_url",equalTo(vendorDTOMock.getVendorUrl())))
+                .andDo(print());
+    }
+
 }
