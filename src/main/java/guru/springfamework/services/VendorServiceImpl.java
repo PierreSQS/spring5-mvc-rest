@@ -2,9 +2,10 @@ package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
 import guru.springfamework.api.v1.model.VendorDTO;
-import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.springframework.stereotype.Service;
+
+import static guru.springfamework.controllers.v1.VendorController.BASE_URL;
 
 /**
  * Created by Pierrot on 7/15/21.
@@ -21,9 +22,10 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public VendorDTO getVendorByID(Long id) {
-        Vendor vendor = vendorRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
-        vendorDTO.setVendorUrl("/api/v1/vendors/"+id);
-        return vendorDTO;
+        return vendorRepository.findById(id)
+                .map(vendorMapper::vendorToVendorDTO)
+                .map(vendorDTO -> {vendorDTO.setVendorUrl(BASE_URL+"/"+id);
+                        return vendorDTO;
+                }).orElseThrow(ResourceNotFoundException::new);
     }
 }
