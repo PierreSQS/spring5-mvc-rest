@@ -37,7 +37,11 @@ public class VendorServiceImpl implements VendorService {
     public VendorListDTO getAllVendors() {
         List<VendorDTO> vendorDTOList = vendorRepository.findAll()
                 .stream()
-                .map(vendorMapper::vendorToVendorDTO)
+                .map(vendor -> {
+                    VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
+                    vendorDTO.setVendorUrl(BASE_URL+"/"+vendor.getId());
+                    return vendorDTO;
+                })
                 .collect(Collectors.toList());
         return new VendorListDTO(vendorDTOList);
     }
