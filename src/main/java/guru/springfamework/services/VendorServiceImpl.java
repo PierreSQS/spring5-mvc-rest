@@ -2,8 +2,12 @@ package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.api.v1.model.VendorListDTO;
 import guru.springfamework.repositories.VendorRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static guru.springfamework.controllers.v1.VendorController.BASE_URL;
 
@@ -27,5 +31,14 @@ public class VendorServiceImpl implements VendorService {
                 .map(vendorDTO -> {vendorDTO.setVendorUrl(BASE_URL+"/"+id);
                         return vendorDTO;
                 }).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @Override
+    public VendorListDTO getAllVendors() {
+        List<VendorDTO> vendorDTOList = vendorRepository.findAll()
+                .stream()
+                .map(vendorMapper::vendorToVendorDTO)
+                .collect(Collectors.toList());
+        return new VendorListDTO(vendorDTOList);
     }
 }

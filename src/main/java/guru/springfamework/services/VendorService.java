@@ -1,6 +1,7 @@
 package guru.springfamework.services;
 
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.api.v1.model.VendorListDTO;
 
 
 /**
@@ -9,5 +10,7 @@ import guru.springfamework.api.v1.model.VendorDTO;
 public interface VendorService {
 
     VendorDTO getVendorByID(Long id);
+
+    VendorListDTO getAllVendors();
 
 }
