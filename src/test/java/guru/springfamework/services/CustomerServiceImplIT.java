@@ -37,7 +37,7 @@ public class CustomerServiceImplIT {
     CustomerService customerService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         System.out.println("Loading Customer Data");
         System.out.println(customerRepository.findAll().size());
 
@@ -49,7 +49,7 @@ public class CustomerServiceImplIT {
     }
 
     @Test
-    public void patchCustomerUpdateFirstName() throws Exception {
+    public void patchCustomerUpdateFirstName() {
         String updatedName = "UpdatedName";
         long id = getCustomerIdValue();
 
@@ -64,7 +64,7 @@ public class CustomerServiceImplIT {
 
         customerService.patchCustomer(id, customerDTO);
 
-        Customer updatedCustomer = customerRepository.findById(id).get();
+        Customer updatedCustomer = customerRepository.findById(id).orElseGet(Customer::new);
 
         assertNotNull(updatedCustomer);
         assertEquals(updatedName, updatedCustomer.getFirstname());
@@ -73,7 +73,7 @@ public class CustomerServiceImplIT {
     }
 
     @Test
-    public void patchCustomerUpdateLastName() throws Exception {
+    public void patchCustomerUpdateLastName() {
         String updatedName = "UpdatedName";
         long id = getCustomerIdValue();
 
@@ -89,7 +89,7 @@ public class CustomerServiceImplIT {
 
         customerService.patchCustomer(id, customerDTO);
 
-        Customer updatedCustomer = customerRepository.findById(id).get();
+        Customer updatedCustomer = customerRepository.findById(id).orElseGet(Customer::new);
 
         assertNotNull(updatedCustomer);
         assertEquals(updatedName, updatedCustomer.getLastname());
