@@ -19,12 +19,11 @@ import static guru.springfamework.controllers.v1.VendorController.BASE_URL;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(VendorController.class)
@@ -99,4 +98,28 @@ public class VendorControllerTest extends AbstractRestControllerTest{
                 .andDo(print());
     }
 
+    @Test
+    public void updateVendorByDTO() throws Exception {
+        final String vendorName = "Mock Inc.";
+        // Given
+        VendorDTO vendorDTOMock = new VendorDTO();
+        vendorDTOMock.setName(vendorName);
+        vendorDTOMock.setVendorUrl(BASE_URL+"/1");
+
+        when(vendorService.saveVendorByDTO(anyLong(),eq(vendorDTOMock))).thenReturn(vendorDTOMock);
+
+//        String jsonVendorData = "{\"name\":\""+vendorName+"\"}"; Manual alternative!!!!
+        String jsonVendorData = asJsonString(vendorDTOMock);
+        System.out.println("##### "+jsonVendorData+" ##########");
+
+        // When, then
+        mockMvc.perform(put(vendorDTOMock.getVendorUrl())
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .content(jsonVendorData))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.name",equalTo(vendorDTOMock.getName())))
+                .andExpect(jsonPath("$.vendor_url",equalTo(vendorDTOMock.getVendorUrl())))
+                .andDo(print());
+    }
 }
