@@ -148,4 +148,11 @@ public class VendorControllerTest extends AbstractRestControllerTest{
                 .andExpect(jsonPath("$.vendor_url").value(patchedVendorDTO.getVendorUrl()))
                 .andDo(print());
     }
+
+    @Test
+    public void deleteVendorByID() throws Exception {
+        mockMvc.perform(delete(BASE_URL+"/1"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }
