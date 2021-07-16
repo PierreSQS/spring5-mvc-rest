@@ -130,4 +130,34 @@ public class VendorServiceImplTest {
         // Then
         assertThat(savedVendorDTO.getName()).isEqualTo(vendorMock.getName());
     }
+
+    @Test
+    public void patchVendorByName() {
+        final String oldVendorName = "Old Mock Inc.";
+        final String newVendorName = "New Mock Inc.";
+        // Given
+        Vendor newVendor = new Vendor();
+        newVendor.setName(newVendorName);
+        newVendor.setId(1L);
+
+        Vendor oldVendor = new Vendor();
+        oldVendor.setName(oldVendorName);
+        oldVendor.setId(1L);
+
+        VendorDTO newVendorDTO = new VendorDTO();
+        newVendorDTO.setVendorUrl(BASE_URL+"/"+newVendor.getId());
+        newVendorDTO.setName(newVendorName);
+
+        when(vendorRepoMock.findById(oldVendor.getId())).thenReturn(Optional.of(oldVendor));
+
+        when(vendorRepoMock.save(newVendor)).thenReturn(newVendor);
+
+
+        // When
+        VendorDTO returnedVendorDTO = vendorSrv.patchVendor(1L, newVendorDTO);
+
+        // Then
+        assertThat(returnedVendorDTO.getName()).isEqualTo(newVendorDTO.getName());
+        assertThat(returnedVendorDTO.getVendorUrl()).isEqualTo(newVendorDTO.getVendorUrl());
+    }
 }
