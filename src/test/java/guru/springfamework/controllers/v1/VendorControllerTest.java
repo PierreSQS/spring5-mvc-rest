@@ -108,7 +108,6 @@ public class VendorControllerTest extends AbstractRestControllerTest{
 
         when(vendorService.saveVendorByDTO(anyLong(),eq(vendorDTOMock))).thenReturn(vendorDTOMock);
 
-//        String jsonVendorData = "{\"name\":\""+vendorName+"\"}"; Manual alternative!!!!
         String jsonVendorData = asJsonString(vendorDTOMock);
         System.out.println("##### "+jsonVendorData+" ##########");
 
@@ -120,6 +119,33 @@ public class VendorControllerTest extends AbstractRestControllerTest{
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.name",equalTo(vendorDTOMock.getName())))
                 .andExpect(jsonPath("$.vendor_url",equalTo(vendorDTOMock.getVendorUrl())))
+                .andDo(print());
+    }
+
+    @Test
+    public void patchVendor() throws Exception {
+        // Given
+
+        VendorDTO newVendorDTO = new VendorDTO();
+        newVendorDTO.setName("New Mock Inc.");
+
+        VendorDTO patchedVendorDTO = new VendorDTO();
+        patchedVendorDTO.setName(newVendorDTO.getName());
+        patchedVendorDTO.setVendorUrl(BASE_URL+"/1");
+
+        when(vendorService.patchVendor(anyLong(),eq(newVendorDTO))).thenReturn(patchedVendorDTO);
+
+        String jsonVendorData = asJsonString(newVendorDTO);
+        System.out.println("##### "+jsonVendorData+" ##########");
+
+        // When Then
+        mockMvc.perform(patch(BASE_URL+"/1")
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                   .content(jsonVendorData))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.name").value(patchedVendorDTO.getName()))
+                .andExpect(jsonPath("$.vendor_url").value(patchedVendorDTO.getVendorUrl()))
                 .andDo(print());
     }
 }
