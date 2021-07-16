@@ -106,4 +106,28 @@ public class VendorServiceImplTest {
 
         verify(vendorRepoMock).save(any());
     }
+
+    @Test
+    public void saveVendorByDTO() {
+        final String vendorName = "Mock Inc.";
+
+        // Given
+        Vendor vendorMock = new Vendor();
+        vendorMock.setName(vendorName);
+        vendorMock.setId(1L);
+
+        when(vendorRepoMock.findById(vendorMock.getId())).thenReturn(Optional.of(vendorMock));
+
+        when(vendorRepoMock.save(any(Vendor.class))).thenReturn(vendorMock);
+
+        VendorDTO vendorDTOMock = new VendorDTO();
+        vendorDTOMock.setName(vendorMock.getName());
+        vendorDTOMock.setVendorUrl(BASE_URL+"/"+vendorMock.getId());
+
+        // When
+        VendorDTO savedVendorDTO = vendorSrv.saveVendorByDTO(1L, vendorDTOMock);
+
+        // Then
+        assertThat(savedVendorDTO.getName()).isEqualTo(vendorMock.getName());
+    }
 }
