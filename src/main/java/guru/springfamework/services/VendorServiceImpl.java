@@ -29,8 +29,9 @@ public class VendorServiceImpl implements VendorService {
     public VendorDTO getVendorByID(Long id) {
         return vendorRepository.findById(id)
                 .map(vendorMapper::vendorToVendorDTO)
-                .map(vendorDTO -> {vendorDTO.setVendorUrl(BASE_URL+"/"+id);
-                        return vendorDTO;
+                .map(vendorDTO -> {
+                    vendorDTO.setVendorUrl(BASE_URL + "/" + id);
+                    return vendorDTO;
                 }).orElseThrow(ResourceNotFoundException::new);
     }
 
@@ -40,7 +41,7 @@ public class VendorServiceImpl implements VendorService {
                 .stream()
                 .map(vendor -> {
                     VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
-                    vendorDTO.setVendorUrl(BASE_URL+"/"+vendor.getId());
+                    vendorDTO.setVendorUrl(BASE_URL + "/" + vendor.getId());
                     return vendorDTO;
                 })
                 .collect(Collectors.toList());
@@ -52,7 +53,7 @@ public class VendorServiceImpl implements VendorService {
         Vendor vendor = vendorMapper.vendorDtoToVendor(vendorDTO);
         vendorRepository.save(vendor);
 
-        vendorDTO.setVendorUrl(BASE_URL+"/"+vendor.getId());
+        vendorDTO.setVendorUrl(BASE_URL + "/" + vendor.getId());
         return vendorDTO;
     }
 
@@ -84,5 +85,11 @@ public class VendorServiceImpl implements VendorService {
 
             return patchedVendorMock;
         }).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @Override
+    public void deleteVendorById(Long id) {
+        if (vendorRepository.findById(id).isPresent())
+            vendorRepository.deleteById(id);
     }
 }

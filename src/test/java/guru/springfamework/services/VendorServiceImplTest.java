@@ -160,4 +160,20 @@ public class VendorServiceImplTest {
         assertThat(returnedVendorDTO.getName()).isEqualTo(newVendorDTO.getName());
         assertThat(returnedVendorDTO.getVendorUrl()).isEqualTo(newVendorDTO.getVendorUrl());
     }
+
+    @Test
+    public void deleteVendorById() {
+        // Given
+        Vendor foundVendor = new Vendor();
+        foundVendor.setName("Found Vendor INC.");
+        foundVendor.setId(1L);
+
+        when(vendorRepoMock.findById(anyLong())).thenReturn(Optional.of(foundVendor));
+
+        // When
+        vendorSrv.deleteVendorById(1L);
+
+        // Then
+        verify(vendorRepoMock).deleteById(1L);
+    }
 }
