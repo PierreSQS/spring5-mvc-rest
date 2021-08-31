@@ -36,7 +36,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
     MockMvc mockMvc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.standaloneSetup(customerController)
@@ -60,8 +60,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
 
         when(customerService.getAllCustomers()).thenReturn(Arrays.asList(customer1, customer2));
 
-        mockMvc.perform(get(CustomerController.BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(CustomerController.BASE_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(2)));
     }
@@ -78,8 +77,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         when(customerService.getCustomerById(anyLong())).thenReturn(customer1);
 
         //when
-        mockMvc.perform(get(CustomerController.BASE_URL + "/1")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(CustomerController.BASE_URL + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo("Michale")));
     }

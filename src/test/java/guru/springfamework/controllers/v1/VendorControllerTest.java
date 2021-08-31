@@ -40,7 +40,7 @@ public class VendorControllerTest {
     VendorDTO vendorDTO_2;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         vendorDTO_1 = new VendorDTO("Vendor 1", VendorController.BASE_URL + "/1");
         vendorDTO_2 = new VendorDTO("Vendor 2", VendorController.BASE_URL + "/2");
     }
@@ -51,8 +51,7 @@ public class VendorControllerTest {
 
         given(vendorService.getAllVendors()).willReturn(vendorListDTO);
 
-        mockMvc.perform(get(VendorController.BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(VendorController.BASE_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(2)));
     }
@@ -62,8 +61,7 @@ public class VendorControllerTest {
 
         given(vendorService.getVendorById(anyLong())).willReturn(vendorDTO_1);
 
-        mockMvc.perform(get(VendorController.BASE_URL + "/1")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(VendorController.BASE_URL + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(vendorDTO_1.getName())));
     }
